@@ -1,0 +1,37 @@
+﻿@using Application.Dtos
+
+<MatCard class="demo-mat-card">
+    <MatCardContent>
+        <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
+        <div class="demo-mat-card-content">
+            <MatHeadline6 class="demo-mat-card-clean-margin">
+               @Post.Title
+            </MatHeadline6>
+            <MatSubtitle2 class="demo-mat-card-clean-margin">
+                by @Post.User.FirstName @Post.User.LastName
+            </MatSubtitle2>
+        </div>
+ 
+        <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
+         @Post.Body
+        </MatBody2>
+    </MatCardContent>
+    <MatCardActions>
+        <MatCardActionButtons>
+            <MatButton>Read</MatButton>
+            <MatButton>Bookmark</MatButton>
+        </MatCardActionButtons>
+ 
+        <MatCardActionIcons>
+            <MatIconButton Icon="@MatIconNames.Favorite"></MatIconButton>
+            <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
+        </MatCardActionIcons>
+    </MatCardActions>
+</MatCard>
+
+
+@code {
+    [Parameter]
+    public PostGetDto Post { get; set; }
+}
+

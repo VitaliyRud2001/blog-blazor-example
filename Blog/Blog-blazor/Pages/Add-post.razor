@@ -1,0 +1,88 @@
+﻿@page "/Add-post"
+
+@using Application.Dtos
+@using Markdig
+@using Blog_blazor.Services.Interface
+@using Microsoft.AspNetCore.Http
+@inject IPostService PostService
+
+@if (_showProgressBar == false)
+{
+    <div class="container">
+        <p>
+            <MatTextField @bind-Value="@_postCreateDto.Title" HelperText="Title of your post" Label="Title" FullWidth="true"></MatTextField>
+        </p>
+
+        <p>
+            <textarea style="width: 100%; max-width: 100%;" @bind-value="_postCreateDto.Body" @bind-value:event="oninput" rows="4" cols="100"></textarea>
+        </p>
+      
+        <p>
+
+        </p>
+
+        <p><MatButton Raised="true" @onclick="HandleClick">Create post</MatButton></p>
+        <p><MatButton @onclick="HandlePreviewButtonClick">
+            @if (_showPreview==false)
+            {
+                <p>Show preview</p>
+            }
+            else
+            {
+                <p>Close preview</p>
+            }
+
+        </MatButton></p>
+
+        @if (_showPreview==true)
+        {
+    <p>@((MarkupString)BodyMarkDown)</p>
+        }
+    
+
+    </div>
+}
+else
+{
+    <h3 class="mat-subtitle1">Creating post...</h3>
+    <MatProgressBar Indeterminate="true"></MatProgressBar>
+}
+
+
+
+
+@code {
+    private bool _showProgressBar = false;
+    private bool _showPreview = false;
+    private PostCreateDto _postCreateDto = new PostCreateDto();
+
+    private string BodyMarkDown
+    {
+        get
+        {
+            if(!String.IsNullOrEmpty(_postCreateDto.Body))
+            return Markdown.ToHtml(_postCreateDto.Body);
+            return String.Empty;
+        }
+    }
+
+    async Task HandleClick()
+    {
+        _showProgressBar = true;
+
+        _postCreateDto.BodyMarkDown = BodyMarkDown;
+        _postCreateDto.UserId = 1;
+
+        await PostService.CreatePostAsync(_postCreateDto);
+        _showProgressBar = false;
+    }
+
+    void HandlePreviewButtonClick()
+    {
+        _showPreview = !_showPreview;
+    }
+
+
+
+
+}

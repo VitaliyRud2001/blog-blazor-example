@@ -1,0 +1,54 @@
+﻿@page "/fetchdata"
+
+@using Application.Dtos
+@using Blog_blazor.Data
+@using Blog_blazor.Services.Interface
+@inject IPostService PostService;
+<h1>Recent posts</h1>
+    
+@if (Posts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<div class="container">
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+
+            @foreach (var forecast in Posts.Page)
+            {
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+                    <PostPreview Post="@forecast"></PostPreview>
+                </div>
+            }
+        </div>  
+    </div>
+    <div class="row">
+        <PaginationComponent @bind-Page="_paging.Page" @bind-Page:event="() =>LoadPosts()" PageSize="@_paging.PageSize" TotalCount="@Posts.TotalCount"></PaginationComponent>
+    </div>
+</div>
+
+}
+
+@code {
+
+
+    private PaginationDto<PostGetDto> Posts;
+    private Pagination _paging { get; set; } = new Pagination
+    {
+        Page = 1,
+        PageSize = 3
+    };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Posts = await PostService.GetPostsAsync(_paging);
+    }
+
+    public async Task LoadPosts()
+    {
+        Posts = await PostService.GetPostsAsync(_paging);
+    }
+}
